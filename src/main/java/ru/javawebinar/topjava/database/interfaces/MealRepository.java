@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.database;
+package ru.javawebinar.topjava.database.interfaces;
 
 import ru.javawebinar.topjava.model.Meal;
 
@@ -7,9 +7,9 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
-public class MealRepository {
+public interface MealRepository {
 
-    public static List<Meal> getAllMeal() {
+    static List<Meal> getHardcodeMealList() {
         return Arrays.asList(
                 new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
                 new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
@@ -19,4 +19,14 @@ public class MealRepository {
                 new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
         );
     }
+
+    void create(Meal meal);
+
+    List<Meal> readAll();
+
+    Meal read(Integer id);
+
+    void update(Integer id, Meal meal);
+
+    void delete(Integer id);
 }
