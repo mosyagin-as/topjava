@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -36,18 +37,23 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if (action == null) {
-            MealsUtil.fullMealRepository(mealRepository);
+            log.info("Get All");
             request.setAttribute("mealToList", getMealToList());
         }
         else if (action.equalsIgnoreCase("delete")){
-            int mealId = Integer.parseInt(request.getParameter("mealId"));
+            log.info("delete");
+            int mealId = Integer.parseInt(request.getParameter("id"));
             mealRepository.delete(mealId);
             request.setAttribute("mealToList", getMealToList());
-        } else if (action.equalsIgnoreCase("edit")){
+        } else if (action.equalsIgnoreCase("edit")) {
             forward = INSERT_OR_EDIT;
-            int mealId = Integer.parseInt(request.getParameter("mealId"));
+            int mealId = Integer.parseInt(request.getParameter("id"));
             Meal meal = mealRepository.read(mealId);
-//            request.setAttribute("user", user);
+            request.setAttribute("meal", meal);
+        } else if (action.equalsIgnoreCase("create")) {
+            forward = INSERT_OR_EDIT;
+            Meal meal = new Meal(LocalDateTime.now(), "", 1000);
+            request.setAttribute("meal", meal);
         } else if (action.equalsIgnoreCase("listUser")){
             request.setAttribute("mealToList", getMealToList());
         }

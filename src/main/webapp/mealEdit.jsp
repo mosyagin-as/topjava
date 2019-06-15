@@ -4,33 +4,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
-    <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
-    <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>
-    <title>Add new user</title>
+    <title>Meal</title>
 </head>
 <body>
-<%--<script>--%>
-<%--    $(function() {--%>
-<%--        $('input[name=dob]').datepicker();--%>
-<%--    });--%>
-<%--</script>--%>
+<h3><a href="index.html">Home</a></h3>
+<h3>Edit meal</h3>
+<hr>
 
-<form method="POST" action='MealController' name="frmAddUser">
-<%--    Meal ID : <input type="text" readonly="readonly" name="id"--%>
-<%--                     value="<c:out value="${meal.id}" />" /> <br />--%>
-    Date : <input type="text" name="date" value="<fmt:formatDate pattern="yyyy-MM-dd" value="${mdate}" />" /> <br/>
-    Time : <input type="text" name="time" value="<fmt:formatDate pattern="HH:mm:ss" value="${mtime}" />" /> <br/>
-
-<%--    First Name : <input--%>
-<%--        type="text" name="dateTime"--%>
-<%--        value="<c:out value="${user.firstName}" />" /> <br />--%>
-<%--    Last Name : <input--%>
-<%--        type="text" name="lastName"--%>
-<%--        value="<c:out value="${user.lastName}" />" /> <br />--%>
-<%--    Email : <input type="text" name="email"--%>
-<%--                   value="<c:out value="${user.email}" />" /> <br />--%>
+<form method="POST" action='meals'>
+    <dl>
+        <dt>DateTime</dt>
+        <dd><input type="datetime-local" value="${meal.dateTime}" name="dateTime"></dd>
+        <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
+    </dl>
+<%--    Date : <input type="text" name="date" value="<fmt:formatDate pattern="yyyy-MM-dd" value="${mdate}" />" /> <br/>--%>
+<%--    Time : <input type="text" name="time" value="<fmt:formatDate pattern="HH:mm:ss" value="${mtime}" />" /> <br/>--%>
     <input type="submit" value="Submit" />
 </form>
 </body>
