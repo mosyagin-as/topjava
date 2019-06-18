@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Login</title>
@@ -7,9 +8,14 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <form method="post" action="login">
-    <dl>
-        <label>Enter user ID (1 - Ivan, 2 - Alex):<input type="number" name="userId" required></label>
-    </dl>
+    <label>Select User</label>
+
+    <c:forEach items="${userList}" var="user">
+
+        <p><input type="radio" value="${user.id}" name="userId">${user.name}</p>
+
+    </c:forEach>
+
     <button type="submit">Login</button>
 </form>
 </body>

@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
@@ -26,8 +25,8 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        ApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-        controller = appCtx.getBean(MealRestController.class);
+        ApplicationContext applicationContext = (ApplicationContext) config.getServletContext().getAttribute("applicationContext");
+        controller = applicationContext.getBean(MealRestController.class);
     }
 
     @Override
@@ -37,7 +36,7 @@ public class MealServlet extends HttpServlet {
         String user = request.getParameter("user");
 
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                SecurityUtil.authUserId(),
+                null,
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
@@ -45,7 +44,7 @@ public class MealServlet extends HttpServlet {
         if (meal.isNew()) {
             controller.create(meal);
         } else {
-            controller.update(meal);
+            controller.update(meal, Integer.valueOf(id));
         }
         response.sendRedirect("meals?user=" + user);
     }
@@ -63,9 +62,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case "create":
             case "update":
-                final Meal meal = "create".equals(action) ?
-                        new Meal(SecurityUtil.authUserId(), LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        controller.get(getId(request));
+                final Meal meal = "create".equals(action) ? new Meal() : controller.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;

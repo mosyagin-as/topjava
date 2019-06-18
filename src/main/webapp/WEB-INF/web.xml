@@ -36,4 +36,8 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
+    <listener>
+        <listener-class>ru.javawebinar.topjava.web.ApplicationContextListener</listener-class>
+    </listener>
+
 </web-app>

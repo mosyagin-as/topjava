@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 public class Meal extends AbstractBaseEntity {
 
@@ -13,6 +14,10 @@ public class Meal extends AbstractBaseEntity {
     private final String description;
 
     private final int calories;
+
+    public Meal() {
+        this(null, null, LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
+    }
 
     public Meal(Integer userId, LocalDateTime dateTime, String description, int calories) {
         this(null, userId, dateTime, description, calories);
