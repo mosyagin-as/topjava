@@ -35,6 +35,7 @@ public class LoginServlet extends HttpServlet {
             User user = controller.get(userIdNumber);
             if (user != null) {
                 SecurityUtil.setAuthUserId(userIdNumber);
+                SecurityUtil.setCaloriesPerDay(user.getCaloriesPerDay());
                 response.sendRedirect("meals?user=" + user.getName());
             }
         }

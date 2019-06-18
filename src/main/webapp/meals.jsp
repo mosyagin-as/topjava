@@ -21,7 +21,25 @@
     <h3><a href="index.html">Home</a></h3>
     <label>User: ${user}</label>
     <hr/>
-    <h2>Meals</h2>
+    <h2>Моя еда</h2>
+    <form>
+        <dl>
+            <dt>
+                От даты: <input type="datetime-local" name="startDateTime">
+                До даты: <input type="datetime-local" name="endDateTime">
+            </dt>
+        </dl>
+        <dl>
+            <dt>
+                От времени: <input type="time" name="startTime">
+                До времени: <input type="time" name="endTime">
+            </dt>
+        </dl>
+        <button type="submit">Отфильтровать</button>
+
+    </form>
+    <hr/>
+
     <a href="meals?action=create&id=${meal.id}&user=${user}">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
@@ -38,9 +56,6 @@
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
             <tr class="${meal.excess ? 'excess' : 'normal'}">
                 <td>
-                        <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
-                        <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
-                        <%--${fn:replace(meal.dateTime, 'T', ' ')}--%>
                         ${fn:formatDateTime(meal.dateTime)}
                 </td>
                 <td>${meal.description}</td>

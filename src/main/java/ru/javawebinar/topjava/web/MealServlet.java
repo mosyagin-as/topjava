@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
@@ -53,7 +52,10 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         String user = request.getParameter("user");
+        String startDateTime = request.getParameter("startDateTime");
+
         request.setAttribute("user", user);
+
 
         switch (action == null ? "all" : action) {
             case "delete":
@@ -68,8 +70,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case "all":
             default:
-                request.setAttribute("meals",
-                        MealsUtil.getWithExcess(controller.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                request.setAttribute("meals", controller.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
