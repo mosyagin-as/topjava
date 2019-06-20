@@ -25,8 +25,8 @@
     <form>
         <dl>
             <dt>
-                От даты: <input type="datetime-local" name="startDateTime">
-                До даты: <input type="datetime-local" name="endDateTime">
+                От даты: <input type="date" name="startDate">
+                До даты: <input type="date" name="endDate">
             </dt>
         </dl>
         <dl>
