@@ -98,6 +98,13 @@ public class MealServiceTest {
         assertMatch(service.get(USER_BREAKFAST_ID, USER_ID), updated);
     }
 
+    @Test(expected = NotFoundException.class)
+    public void updateMealAnotherUser() {
+        Meal updated = new Meal(USER_BREAKFAST);
+        updated.setDescription("Updated Description");
+        service.update(updated, ADMIN_ID);
+    }
+
     @Test
     public void create() {
         Meal newMeal = new Meal(LocalDateTime.of(2019, Month.JUNE, 21, 10, 0), "Admin another Завтрак", 500);
