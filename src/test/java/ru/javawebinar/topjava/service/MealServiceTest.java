@@ -38,8 +38,7 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        assertThat(service.get(USER_BREAKFAST_ID, USER_ID))
-                .isEqualTo(USER_BREAKFAST);
+        assertMatch(service.get(USER_BREAKFAST_ID, USER_ID), USER_BREAKFAST);
     }
 
     @Test(expected = NotFoundException.class)
@@ -54,8 +53,8 @@ public class MealServiceTest {
 
     @Test
     public void delete() {
-        service.delete(USER_BREAKFAST_ID, USER_ID);
-        assertThat(service.getAll(USER_ID)).isEqualTo(Arrays.asList(USER_LUNCH, USER_DINNER));
+        service.delete(ADMIN_BREAKFAST_ID, ADMIN_ID);
+        assertMatch(service.getAll(ADMIN_ID), ADMIN_DINNER, ADMIN_LUNCH);
     }
 
     @Test(expected = NotFoundException.class)
@@ -70,25 +69,24 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenDates() {
-        service.create(new Meal(LocalDateTime.of(2019, Month.JUNE, 19, 10, 0), "User AnotherЗавтрак", 500), USER_ID);
         LocalDate startDate = LocalDate.of(2019, Month.JUNE, 20);
         LocalDate endDate = LocalDate.of(2019, Month.JUNE, 23);
-        assertThat(service.getBetweenDates(startDate, endDate, USER_ID))
-                .isEqualTo(Arrays.asList(USER_BREAKFAST, USER_LUNCH, USER_DINNER));
+        assertMatch(service.getBetweenDates(startDate, endDate, USER_ID),
+                USER_DINNER_23, USER_LUNCH_23, USER_BREAKFAST_23, USER_DINNER, USER_LUNCH, USER_BREAKFAST);
     }
 
     @Test
     public void getBetweenDateTimes() {
         LocalDateTime startDateTime = LocalDateTime.of(2019, Month.JUNE, 20, 9, 20);
         LocalDateTime endDateTime = LocalDateTime.of(2019, Month.JUNE, 22, 14, 40);
-        assertThat(service.getBetweenDateTimes(startDateTime, endDateTime, USER_ID))
-                .isEqualTo(Arrays.asList(USER_BREAKFAST, USER_LUNCH));
+        assertMatch(service.getBetweenDateTimes(startDateTime, endDateTime, USER_ID),
+                USER_LUNCH, USER_BREAKFAST);
     }
 
     @Test
     public void getAll() {
-        assertThat(service.getAll(ADMIN_ID))
-                .isEqualTo(Arrays.asList(ADMIN_BREAKFAST, ADMIN_LUNCH, ADMIN_DINNER));
+        assertMatch(service.getAll(ADMIN_ID),
+                ADMIN_DINNER, ADMIN_LUNCH, ADMIN_BREAKFAST);
     }
 
     @Test
@@ -97,16 +95,15 @@ public class MealServiceTest {
         updated.setDescription("Updated Description");
         updated.setCalories(450);
         service.update(updated, USER_ID);
-        assertThat(service.get(USER_BREAKFAST_ID, USER_ID))
-                .isEqualToComparingFieldByField(updated);
+        assertMatch(service.get(USER_BREAKFAST_ID, USER_ID), updated);
     }
 
     @Test
     public void create() {
-        Meal newMeal = new Meal(LocalDateTime.of(2019, Month.JUNE, 21, 10, 0), "User another Завтрак", 500);
-        Meal created = service.create(newMeal, USER_ID);
+        Meal newMeal = new Meal(LocalDateTime.of(2019, Month.JUNE, 21, 10, 0), "Admin another Завтрак", 500);
+        Meal created = service.create(newMeal, ADMIN_ID);
         newMeal.setId(created.getId());
-        assertThat(service.getAll(USER_ID))
-                .isEqualTo(Arrays.asList(created, USER_BREAKFAST, USER_LUNCH, USER_DINNER));
+        assertMatch(service.getAll(ADMIN_ID),
+                ADMIN_DINNER, ADMIN_LUNCH, ADMIN_BREAKFAST, created);
     }
 }
