@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static ru.javawebinar.topjava.Profiles.POSTGRES_DB;
-import static ru.javawebinar.topjava.Profiles.REPOSITORY_IMPLEMENTATION;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 @ContextConfiguration({
@@ -34,8 +32,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-//@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-@ActiveProfiles({POSTGRES_DB, REPOSITORY_IMPLEMENTATION})
+@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 public abstract class UserServiceTest {
     private static final Logger log = getLogger("result");
 
