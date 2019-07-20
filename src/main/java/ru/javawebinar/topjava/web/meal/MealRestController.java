@@ -18,59 +18,41 @@ import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 @Controller
-public class MealRestController {
+public class MealRestController extends AbstractMealController{
     private static final Logger log = LoggerFactory.getLogger(MealRestController.class);
-
-    private final MealService service;
 
     @Autowired
     public MealRestController(MealService service) {
-        this.service = service;
+        super(service);
     }
 
+    @Override
     public Meal get(int id) {
-        int userId = SecurityUtil.authUserId();
-        log.info("get meal {} for user {}", id, userId);
-        return service.get(id, userId);
+        return super.get(id);
     }
 
+    @Override
     public void delete(int id) {
-        int userId = SecurityUtil.authUserId();
-        log.info("delete meal {} for user {}", id, userId);
-        service.delete(id, userId);
+        super.delete(id);
     }
 
+    @Override
     public List<MealTo> getAll() {
-        int userId = SecurityUtil.authUserId();
-        log.info("getAll for user {}", userId);
-        return MealsUtil.getWithExcess(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
+        return super.getAll();
     }
 
-    public Meal create(Meal meal) {
-        int userId = SecurityUtil.authUserId();
-        checkNew(meal);
-        log.info("create {} for user {}", meal, userId);
-        return service.create(meal, userId);
-    }
-
-    public void update(Meal meal, int id) {
-        int userId = SecurityUtil.authUserId();
-        assureIdConsistent(meal, id);
-        log.info("update {} for user {}", meal, userId);
-        service.update(meal, userId);
-    }
-
-    /**
-     * <ol>Filter separately
-     * <li>by date</li>
-     * <li>by time for every date</li>
-     * </ol>
-     */
+    @Override
     public List<MealTo> getBetween(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        int userId = SecurityUtil.authUserId();
-        log.info("getBetween dates({} - {}) time({} - {}) for user {}", startDate, endDate, startTime, endTime, userId);
+        return super.getBetween(startDate, startTime, endDate, endTime);
+    }
 
-        List<Meal> mealsDateFiltered = service.getBetweenDates(startDate, endDate, userId);
-        return MealsUtil.getFilteredWithExcess(mealsDateFiltered, SecurityUtil.authUserCaloriesPerDay(), startTime, endTime);
+    @Override
+    public Meal create(Meal meal) {
+        return super.create(meal);
+    }
+
+    @Override
+    public void update(Meal meal, int id) {
+        super.update(meal, id);
     }
 }
