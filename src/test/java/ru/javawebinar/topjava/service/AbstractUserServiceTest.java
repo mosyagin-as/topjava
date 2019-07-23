@@ -4,9 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
@@ -24,9 +27,18 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     protected CacheManager cacheManager;
 
+    @Autowired(required = false)
+    protected JpaUtil jpaUtil;
+
+    @Autowired
+    private Environment environment;
+
     @Before
     public void setUp() throws Exception {
         cacheManager.getCache("users").clear();
+        if (!isActiveProfile(Profiles.JDBC)) {
+            jpaUtil.clear2ndLevelHibernateCache();
+        }
     }
 
     @Test
@@ -76,6 +88,22 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         User updated = new User(USER);
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
+        service.update(updated);
+        assertMatch(service.get(USER_ID), updated);
+    }
+
+    @Test
+    public void addRole() throws Exception {
+        User updated = new User(USER);
+        updated.addRole(Role.ROLE_ADMIN);
+        service.update(updated);
+        assertMatch(service.get(USER_ID), updated);
+    }
+
+    @Test
+    public void deleteRole() throws Exception {
+        User updated = new User(USER);
+        updated.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
         service.update(updated);
         assertMatch(service.get(USER_ID), updated);
     }

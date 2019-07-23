@@ -30,7 +30,7 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @GetMapping("/filter")
+    @GetMapping("/meals/filter")
     public String filter(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
@@ -40,20 +40,20 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @GetMapping("/delete")
+    @GetMapping("/meals/delete")
     public String delete(@RequestParam int id, Model model) {
         super.delete(id);
         return meals(model);
     }
 
-    @GetMapping("/update")
+    @GetMapping("/meals/update")
     public String update(@RequestParam int id, Model model) {
         Meal meal = super.get(id);
         model.addAttribute("meal", meal);
         return "/mealForm";
     }
 
-    @GetMapping("/create")
+    @GetMapping("/meals/create")
     public String create(Model model) {
         Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         model.addAttribute("meal", meal);
