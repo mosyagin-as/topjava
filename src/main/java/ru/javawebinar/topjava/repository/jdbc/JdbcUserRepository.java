@@ -13,8 +13,11 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserRole;
 import ru.javawebinar.topjava.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class JdbcUserRepository implements UserRepository {
@@ -58,16 +61,27 @@ public class JdbcUserRepository implements UserRepository {
             userRoleList = jdbcTemplate.queryForList("SELECT role FROM user_roles WHERE user_id=?", Role.class, user.getId());
         }
 
+
+        List<Object[]> batchUpdate = new ArrayList<>();
         for (Role role : user.getRoles()) {
             if (!userRoleList.contains(role)) {
-                insertRole.execute(new BeanPropertySqlParameterSource(new UserRole(user.getId(), role)));
+                Object[] values = new Object[]{user.getId(), role.name()};
+                batchUpdate.add(values);
             }
         }
+        if (!batchUpdate.isEmpty()) {
+            jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", batchUpdate);
+        }
 
-        for (Role role : userRoleList) {
+        List<Object[]> batchDelete = new ArrayList<>();
+        for (Role role : user.getRoles()) {
             if (!user.getRoles().contains(role)) {
-                jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=? AND role=?", user.getId(), role.name());
+                Object[] values = new Object[]{user.getId(), role.name()};
+                batchDelete.add(values);
             }
+        }
+        if (!batchDelete.isEmpty()) {
+            jdbcTemplate.batchUpdate("DELETE FROM user_roles WHERE user_id=? AND role=?", batchDelete);
         }
         return user;
     }
@@ -104,12 +118,13 @@ public class JdbcUserRepository implements UserRepository {
     public List<User> getAll() {
         List<User> userList = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
         List<UserRole> userRoleList = jdbcTemplate.query("SELECT * FROM user_roles", new BeanPropertyRowMapper<>(UserRole.class));
-        for (UserRole userRole : userRoleList) {
-            userList.stream()
-                    .filter(u -> userRole.getUser_id().equals(u.getId()))
-                    .findFirst()
-                    .ifPresent(u -> u.addRole(userRole.getRole()));
-        }
+        Map<Integer, List<Role>> roleList = userRoleList.stream()
+                .collect(Collectors.groupingBy(
+                        UserRole::getUser_id,
+                        Collectors.mapping(UserRole::getRole, Collectors.toList())));
+
+        userList.forEach(u -> u.setRoles(roleList.get(u.getId())));
+
         return userList;
     }
 }

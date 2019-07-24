@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
@@ -17,6 +18,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 @Controller
+@RequestMapping(value = "/meals")
 public class JspMealController extends AbstractMealController {
 
     @Autowired
@@ -24,13 +26,13 @@ public class JspMealController extends AbstractMealController {
         super(service);
     }
 
-    @GetMapping("/meals")
+    @GetMapping("/")
     public String meals(Model model) {
         model.addAttribute("meals", super.getAll());
         return "meals";
     }
 
-    @GetMapping("/meals/filter")
+    @GetMapping("/filter")
     public String filter(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
@@ -40,27 +42,27 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @GetMapping("/meals/delete")
+    @GetMapping("/delete")
     public String delete(@RequestParam int id, Model model) {
         super.delete(id);
         return meals(model);
     }
 
-    @GetMapping("/meals/update")
+    @GetMapping("/update")
     public String update(@RequestParam int id, Model model) {
         Meal meal = super.get(id);
         model.addAttribute("meal", meal);
         return "/mealForm";
     }
 
-    @GetMapping("/meals/create")
+    @GetMapping("/create")
     public String create(Model model) {
         Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         model.addAttribute("meal", meal);
         return "/mealForm";
     }
 
-    @PostMapping("/meals")
+    @PostMapping("/")
     public String edit(@RequestParam Integer id,
                        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
                        @RequestParam String description,
